@@ -1,0 +1,21 @@
+{
+    "name": "dragonmantank/activecampaign",
+    "description": "An ActiveCampaign v3 Client",
+    "type": "library",
+    "require": {
+        "guzzlehttp/guzzle": "^7.5",
+        "laminas/laminas-diactoros": "^2.16"
+    },
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Dragonmantank\\ActiveCampaign\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Chris Tankersley",
+            "email": "chris@ctankersley.com"
+        }
+    ]
+}
