@@ -10,12 +10,13 @@ use Psr\Http\Message\ResponseInterface;
 
 class Client
 {
-    protected GuzzleHttpClient $guzzle;
-
     protected string $baseURL;
 
-    public function __construct(protected string $accountURL, protected string $accountKey)
-    {
+    public function __construct(
+        protected GuzzleHttpClient $guzzle,
+        protected string $accountURL,
+        protected string $accountKey
+    ) {
         $this->baseURL = $accountURL . '/api/3/';
 
     }
