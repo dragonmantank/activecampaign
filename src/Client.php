@@ -28,7 +28,7 @@ class Client
             $url .= '?' . http_build_query($queryParams);
         }
 
-        $response = $this->send(new Request($queryParams));
+        $response = $this->send(new Request($url));
         
 
         return json_decode($response->getBody()->getContents(), true);
