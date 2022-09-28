@@ -3,7 +3,8 @@ declare(strict_types=1);
 
 namespace Dragonmantank\ActiveCampaign;
 
-use GuzzleHttp\Client as GuzzleHttpClient;
+use Dragonmantank\Plinth\Client as PlinthClient;
+use Dragonmantank\Plinth\ClientInterface;
 use Laminas\Diactoros\Request;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -13,31 +14,29 @@ class Client
     protected string $baseURL;
 
     public function __construct(
-        protected GuzzleHttpClient $guzzle,
         protected string $accountURL,
-        protected string $accountKey
+        protected string $accountKey,
+        protected ?ClientInterface $plinth = null,
     ) {
         $this->baseURL = $accountURL . '/api/3/';
 
+        if (!$this->plinth) {
+            $accountKey = $this->accountKey;
+            $this->plinth = new PlinthClient($this->baseURL, [
+                'authentication_handler' => function(RequestInterface $r) use ($accountKey) {
+                    return $r->withAddedHeader('Api-Token', $accountKey);
+                }
+            ]);
+        }
     }
 
     public function get(string $uri, array $queryParams = []): array
     {
-        $url = $this->baseURL . $uri;
-        if ($queryParams) {
-            $url .= '?' . http_build_query($queryParams);
-        }
-
-        $response = $this->send(new Request($url));
-        
-
-        return json_decode($response->getBody()->getContents(), true);
+        return $this->plinth->get($uri, $queryParams, );
     }
 
     public function send(RequestInterface $request): ResponseInterface
     {
-        $request = $request->withAddedHeader('Api-Token', $this->accountKey);
-
-        return $this->guzzle->sendRequest($request);
+        return $this->plinth->send($request);
     }
 }
